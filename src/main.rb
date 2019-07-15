@@ -1,11 +1,12 @@
 class Main
   PRICE_1000_ATTRS = [:high_school_student, :child, :handicapped]
 
-  def initialize(user_attrs = [:none])
+  def initialize(user_attrs = [:none], movie_type = :standard)
     @user_attrs = user_attrs.is_a?(Array) ? user_attrs : [user_attrs]
+    @movie_type = movie_type
   end
 
-  def call
+  def standard_cost
     # No instance variable definition outside of constructor!
     @result = @user_attrs.map do |attr|
       next 1500 if attr == :university_student
@@ -14,6 +15,11 @@ class Main
     end
     return handicapped_attendant_discount if @user_attrs.include?(:handicapped)
     @result
+  end
+
+  def call
+    return (standard_cost.map { |c| c + 400 }) if @movie_type == :three_d
+    standard_cost
   end
 
   def handicapped_attendant_discount

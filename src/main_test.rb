@@ -22,5 +22,8 @@ class TestMain < Minitest::Test
     assert_equal([1_000, 1_000, 1_900],
       Main.new([:handicapped, :none, :none]).call,
       'it should return [\1000, \1000, \1900] if one of the users is a handicapped with more than one attendant')
+    assert_equal([2_300],
+      Main.new([:none], :three_d).(),
+      'it should cost extra \400 if requested movie is 3D')
   end
 end
