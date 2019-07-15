@@ -1,7 +1,7 @@
 class Main
   PRICE_1000_ATTRS = [:high_school_student, :child, :handicapped]
 
-  def initialize(user_attr = nil)
+  def initialize(user_attr = :none)
     @user_attr = user_attr
   end
 
