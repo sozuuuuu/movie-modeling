@@ -10,5 +10,8 @@ class TestMain < Minitest::Test
     assert_equal(1_000,
       Main.new(:high_school_student).(),
       'it should return \1000 if the user is high school student')
+    assert_equal(1_000,
+      Main.new(:child).(),
+      'it should return \1000 if the user is child')
   end
 end
