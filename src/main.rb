@@ -74,6 +74,7 @@ class Main
     @result = @users.map do |u|
       next 1000 if u.student_type == :high_school_student || u.child? || u.handicapped?
       next 1200 if u.sex == :female && @movie_starts_at&.wday == 3
+      next 1200 if @movie_starts_at&.month != 12 && @movie_starts_at&.day == 1
       next 1500 if u.student_type == :university_student
       1900
     end

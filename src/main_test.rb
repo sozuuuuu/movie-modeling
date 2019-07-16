@@ -32,5 +32,14 @@ class TestMain < Minitest::Test
     assert_equal([1_200],
       Main.new({sex: :female}, :standard, '2019-07-17T15:00:00').(),
       'it should return [¥1300] when the user is female and the movie is played on Wednesday')
+    assert_equal([1_200],
+      Main.new({sex: :male}, :standard, '2019-07-01T15:00:00').(),
+      'it should return [¥1300] when the the movie is played on the beggining of the month (month != 12)')
+    assert_equal([1_900],
+      Main.new({sex: :male}, :standard, '2019-12-01T15:00:00').(),
+      'it should return [¥1900] when the the movie is played on the beggining of the month (month = 12)')
+    assert_equal([1_900],
+      Main.new({sex: :male}, :standard, '2019-07-02T15:00:00').(),
+      'it should return [¥1900] when the the movie isnt played on the beggining of the month (month != 12)')
   end
 end
