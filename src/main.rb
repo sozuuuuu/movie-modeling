@@ -55,14 +55,20 @@ class Users < Array
 end
 
 class Main
+  extend T::Sig
+
   PRICE_1000_ATTRS = [:high_school_student, :child, :handicapped]
 
+  sig { params(user_attrs_or_user: T.any(Symbol, T::Array[Symbol], Hash), movie_type: Symbol, movie_starts_at: T.nilable(String)).void }
   def initialize(user_attrs_or_user = [:none], movie_type = :standard, movie_starts_at = nil)
-    @users = Users.new(ArrayHelper.wrap(user_attrs_or_user).map { |v| v.is_a?(User) ? v : User.build(v) })
-    @movie_type = movie_type
-    @movie_starts_at = movie_starts_at ? DateTime.parse(movie_starts_at) : nil
+    users = Users.new(ArrayHelper.wrap(user_attrs_or_user).map { |v| v.is_a?(User) ? v : User.build(v) })
+    @users = T.let(users, Users)
+    @movie_type = T.let(movie_type, Symbol)
+    @movie_starts_at = T.let(movie_starts_at ? DateTime.parse(movie_starts_at) : nil, T.nilable(DateTime))
+    @result = T.let(nil, T.nilable(T::Array[Integer]))
   end
 
+  sig { returns(T::Array[Integer]) }
   def standard_cost
     # No instance variable definition outside of constructor!
     @result = @users.map do |u|
@@ -75,15 +81,17 @@ class Main
     @result
   end
 
+  sig { returns(T::Array[Integer]) }
   def call
     return (standard_cost.map { |c| c + 400 }) if @movie_type == :three_d
     standard_cost
   end
 
+  sig { returns(T::Array[Integer]) }
   def handicapped_attendant_discount
     # Bad code: stateful map
     discount_count = 1
-    @result.map do |r|
+    (@result || []).map do |r|
       if r > 1000 && discount_count > 0
         discount_count = discount_count - 1
         next 1000
@@ -92,8 +100,9 @@ class Main
     end
   end
 
+  sig { returns(T::Array[Integer]) }
   def evening_discount
-    @result.map do |r|
+    (@result || []).map do |r|
       next 1300 if r > 1300
       r
     end
