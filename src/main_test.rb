@@ -25,5 +25,8 @@ class TestMain < Minitest::Test
     assert_equal([2_300],
       Main.new([:none], :three_d).(),
       'it should cost extra \400 if requested movie is 3D')
+    assert_equal([1_300],
+      Main.new(:none, :standard, '2019-07-16T17:30:00').(),
+      'it should return [¥1300] when the movie starts at 17:30 and it is not a holiday')
   end
 end
