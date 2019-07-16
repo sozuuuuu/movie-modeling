@@ -72,6 +72,7 @@ class Main
   def standard_cost
     # No instance variable definition outside of constructor!
     @result = @users.map do |u|
+      next 1000 if @movie_starts_at&.day == 1 && @movie_starts_at&.month == 12
       next 1000 if u.student_type == :high_school_student || u.child? || u.handicapped?
       next 1200 if u.sex == :female && @movie_starts_at&.wday == 3
       next 1200 if @movie_starts_at&.month != 12 && @movie_starts_at&.day == 1
