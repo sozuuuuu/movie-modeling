@@ -41,5 +41,8 @@ class TestMain < Minitest::Test
     assert_equal([1_000],
       Main.new({sex: :male}, :standard, '2019-12-01T15:00:00').(),
       'it should return [¥1000] when the the movie is played on the beggining of December')
+    assert_equal([1_200],
+      Main.new({sex: :male, age: 60}, :standard, '2019-07-17T15:00:00').(),
+      'it should return [¥1200] when the the user age is gte 60')
   end
 end

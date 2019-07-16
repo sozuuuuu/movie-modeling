@@ -25,6 +25,7 @@ class User < T::Struct
   prop :handicapped, T::Boolean, default: false
   prop :student_type, T.nilable(Symbol), default: nil
   prop :is_child, T::Boolean, default: false
+  prop :age, T.nilable(Integer), default: nil
 
   def self.build(attr)
     return self.build_with_single_symbol(attr) if attr.is_a?(Symbol)
@@ -76,6 +77,7 @@ class Main
       next 1000 if u.student_type == :high_school_student || u.child? || u.handicapped?
       next 1200 if u.sex == :female && @movie_starts_at&.wday == 3
       next 1200 if @movie_starts_at&.month != 12 && @movie_starts_at&.day == 1
+      next 1200 if u.age&.>= 60
       next 1500 if u.student_type == :university_student
       1900
     end
