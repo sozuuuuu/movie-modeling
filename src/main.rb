@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # typed: true
 require 'date'
 require 'holidays'
@@ -28,14 +30,15 @@ class User < T::Struct
   prop :age, T.nilable(Integer), default: nil
 
   def self.build(attr)
-    return self.build_with_single_symbol(attr) if attr.is_a?(Symbol)
+    return build_with_single_symbol(attr) if attr.is_a?(Symbol)
+
     new(attr)
   end
 
   def self.build_with_single_symbol(attr)
     u = User.new
     u.handicapped = true if attr == :handicapped
-    u.student_type = attr if [:university_student, :high_school_student].include?(attr)
+    u.student_type = attr if %i[university_student high_school_student].include?(attr)
     u.is_child = true if attr == :child
     u
   end
@@ -51,14 +54,14 @@ end
 
 class Users < Array
   def have_handicapped?
-    self.any? { |u| u.handicapped? }
+    any?(&:handicapped?)
   end
 end
 
 class Main
   extend T::Sig
 
-  PRICE_1000_ATTRS = [:high_school_student, :child, :handicapped]
+  PRICE_1000_ATTRS = %i[high_school_student child handicapped].freeze
 
   sig { params(user_attrs_or_user: T.any(Symbol, T::Array[Symbol], Hash), movie_type: Symbol, movie_starts_at: T.nilable(String)).void }
   def initialize(user_attrs_or_user = [:none], movie_type = :standard, movie_starts_at = nil)
@@ -79,6 +82,7 @@ class Main
       next 1200 if @movie_starts_at&.month != 12 && @movie_starts_at&.day == 1
       next 1200 if u.age&.>= 60
       next 1500 if u.student_type == :university_student
+
       1900
     end
     @result = handicapped_attendant_discount if @users.have_handicapped?
@@ -89,6 +93,7 @@ class Main
   sig { returns(T::Array[Integer]) }
   def call
     return (standard_cost.map { |c| c + 400 }) if @movie_type == :three_d
+
     standard_cost
   end
 
@@ -98,7 +103,7 @@ class Main
     discount_count = 1
     (@result || []).map do |r|
       if r > 1000 && discount_count > 0
-        discount_count = discount_count - 1
+        discount_count -= 1
         next 1000
       end
       r
@@ -109,6 +114,7 @@ class Main
   def evening_discount
     (@result || []).map do |r|
       next 1300 if r > 1300
+
       r
     end
   end
